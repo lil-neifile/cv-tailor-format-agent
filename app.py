@@ -32,12 +32,6 @@ if st.button("Tailor CV"):
     except Exception as e:
         st.error(f"Error building HTML: {e}")
 
-    rain(
-        emoji="🌈",
-        font_size=54,
-        falling_speed=5,
-        animation_length="infinite",
-    )
 
     fry_applicant_content = tailored_cv["fry_applicant_content"]
     inspire_applicant_content = tailored_cv["inspire_applicant_content"]
@@ -45,3 +39,10 @@ if st.button("Tailor CV"):
     st.markdown(fry_applicant_content)
     st.markdown("## Inspire Applicant Content")
     st.markdown(inspire_applicant_content)
+
+    rain(
+    emoji="🌈",
+    font_size=54,
+    falling_speed=5,
+    animation_length="infinite",
+)
