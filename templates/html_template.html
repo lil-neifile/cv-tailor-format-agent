@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{header.name}} — Resume</title>
+  <style>
+    @page {
+      size: letter;
+      margin: 0.45in 0.55in;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Latin Modern Roman", "Computer Modern", "Times New Roman", Times, serif;
+      font-size: 10pt;
+      line-height: 1.3;
+      color: #000000;
+      background-color: #ffffff;
+      padding: 0.45in 0.55in;
+      max-width: 8.5in;
+      margin: 0 auto;
+    }
+
+    a {
+      color: #000000;
+      text-decoration: none;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 8pt;
+    }
+
+    header h1 {
+      font-size: 17pt;
+      font-weight: bold;
+      text-transform: none;
+      margin-bottom: 2pt;
+    }
+
+    .header-title {
+      font-size: 11pt;
+      font-style: italic;
+      margin-bottom: 4pt;
+    }
+
+    .contact-info {
+      font-size: 9pt;
+    }
+
+    .contact-info a:hover {
+      text-decoration: underline;
+    }
+
+    /* Section Headings */
+    h2 {
+      font-size: 12pt;
+      font-weight: bold;
+      text-transform: none;
+      border-bottom: 1pt solid #000000;
+      padding-bottom: 1pt;
+      margin-top: 6pt;
+      margin-bottom: 4pt;
+    }
+
+    /* Layout Components */
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      width: 100%;
+    }
+
+    .entry-block {
+      margin-bottom: 6pt;
+    }
+
+    .entry-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .primary-line {
+      font-weight: bold;
+    }
+
+    .secondary-line {
+      font-style: italic;
+    }
+
+    .right-align {
+      text-align: right;
+      font-weight: normal;
+      font-style: normal;
+      white-space: nowrap;
+    }
+
+    /* Summary */
+    .summary-text {
+      margin-top: 2pt;
+      margin-bottom: 4pt;
+      text-align: justify;
+    }
+
+    /* Lists */
+    ul {
+      list-style-type: disc;
+      margin-left: 1.2em;
+      margin-top: 2pt;
+      margin-bottom: 4pt;
+    }
+
+    li {
+      margin-bottom: 1.5pt;
+      padding-left: 0.1em;
+    }
+
+    /* Skills */
+    .skills-container {
+      margin-top: 2pt;
+      margin-bottom: 4pt;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <h1>{{header.name}}</h1>
+    <div class="header-title">{{header.title}}</div>
+    <div class="contact-info">
+      <!-- Jinja loop/conditional block example for contact info items -->
+      <a href="tel:{{header.phone}}">{{header.phone}}</a>
+      &ensp;|&ensp;
+      <a href="mailto:{{header.email}}">{{header.email}}</a>
+      &ensp;|&ensp;
+      <span>{{header.location}}</span>
+      &ensp;|&ensp;
+      <a href="{{header.linkedin}}" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      &ensp;|&ensp;
+      <a href="{{header.website}}" target="_blank" rel="noopener noreferrer">Website</a>
+    </div>
+  </header>
+
+  <!-- SUMMARY -->
+  <!-- {% if summary %} -->
+  <section>
+    <h2>Professional Summary</h2>
+    <p class="summary-text">{{summary}}</p>
+  </section>
+  <!-- {% endif %} -->
+
+  <!-- EXPERIENCE -->
+  <!-- {% if experience %} -->
+  <section>
+    <h2>Experience</h2>
+    <!-- {% for item in experience %} -->
+    <div class="entry-block">
+      <div class="entry-header">
+        <span class="primary-line">{{item.company}}</span>
+        <span class="right-align">{{item.dates}}</span>
+      </div>
+      <div class="entry-header">
+        <span class="secondary-line">{{item.title}}</span>
+        <span class="right-align">{{item.location}}</span>
+      </div>
+      <!-- {% if item.bullets %} -->
+      <ul>
+        <!-- {% for bullet in item.bullets %} -->
+        <li>{{bullet}}</li>
+        <!-- {% endfor %} -->
+      </ul>
+      <!-- {% endif %} -->
+    </div>
+    <!-- {% endfor %} -->
+  </section>
+  <!-- {% endif %} -->
+
+  <!-- EDUCATION -->
+  <!-- {% if education %} -->
+  <section>
+    <h2>Education</h2>
+    <!-- {% for item in education %} -->
+    <div class="entry-block">
+      <div class="entry-header">
+        <span class="primary-line">{{item.school}}</span>
+        <span class="right-align">{{item.dates}}</span>
+      </div>
+      <div class="entry-header">
+        <span class="secondary-line">{{item.degree}}</span>
+        <span class="right-align">{{item.details}}</span>
+      </div>
+    </div>
+    <!-- {% endfor %} -->
+  </section>
+  <!-- {% endif %} -->
+
+  <!-- SKILLS -->
+  <!-- {% if skills %} -->
+  <section>
+    <h2>Skills</h2>
+    <div class="skills-container">
+      <p>{{skills | join(', ')}}</p>
+    </div>
+  </section>
+  <!-- {% endif %} -->
+
+</body>
+</html>
