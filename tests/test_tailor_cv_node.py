@@ -1,6 +1,6 @@
 import json
 
-from src.graph.nodes import tailor_cv
+from src.agent.tools import tailor_cv
 
 BASE_CV = """
 Liliia Shrainer

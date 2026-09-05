@@ -2,6 +2,8 @@ from typing import NotRequired
 
 from langchain.agents import AgentState
 
+from src.schemas import TailoredContent
+
 
 class CVAgentDynamicState(AgentState):
     """Agent scratchpad (`messages`, inherited) plus the artifacts the tools produce.
@@ -13,10 +15,10 @@ class CVAgentDynamicState(AgentState):
     cv: str
     job_description: str
 
-    tailored_content: NotRequired[dict]
-    keywords_matched: NotRequired[list[str]]
-    keywords_not_matched: NotRequired[list[str]]
-    html_content: NotRequired[str]
-    pdf_bytes: NotRequired[bytes]
-    mock: NotRequired[str]
-    inspiration: NotRequired[str]
+    tailored_content: TailoredContent
+    keywords_matched: list[str]
+    keywords_not_matched: list[str]
+    html_content: str
+    pdf_bytes: bytes
+    mock: str
+    inspiration: str

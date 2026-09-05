@@ -11,13 +11,15 @@ from src.agent.tools import llm_with_tools, tools
 
 def llm_call_node(state: CVAgentDynamicState) -> dict:
     """Let the model pick the next tool call, or finish with an answer."""
-    return {
-        "messages": [
-            llm_with_tools.invoke(
-                [SystemMessage(content=CV_AGENT_SYSTEM), *state["messages"]]
-            )
-        ]
-    }
+    try: 
+        response = llm_with_tools.invoke(
+            [SystemMessage(content=CV_AGENT_SYSTEM), *state["messages"]]
+        )
+        return {"messages": [response]}
+    except Exception as e:
+        print(f"Error in llm_call_node: {e}")
+        raise
+        
 
 
 # ToolNode injects ToolRuntime and merges the Command state updates the tools return.

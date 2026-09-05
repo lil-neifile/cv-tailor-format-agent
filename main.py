@@ -10,12 +10,16 @@ job_description = st.text_area("Job Description")
 
 if st.button("Tailor CV"):
 
-    
-    tailored_cv = compiled_agent.invoke({
+    try:
+        tailored_cv = compiled_agent.invoke({
         "cv": BASE_CV,
-        "job_description": job_description,
-    })
-    pdf_bytes = tailored_cv["pdf_bytes"]
+            "job_description": job_description,
+        })
+        pdf_bytes = tailored_cv["pdf_bytes"]
+    except Exception as e:
+        st.error(f"Error tailoring CV: {e}", icon="🚨")
+        raise
+    
     try:
         st.download_button(
             label="📥 Download PDF Document",
@@ -31,14 +35,22 @@ if st.button("Tailor CV"):
     except Exception as e:
         st.error(f"Error building HTML: {e}")
 
+    try:
+        fry_applicant_content = tailored_cv["mock"]
+        st.markdown("## Fry Applicant Content")
+        st.markdown(fry_applicant_content)
+    except Exception as e:
+        st.error(f"Error getting fry applicant: {e}", icon="🚨")
+        raise
 
-    fry_applicant_content = tailored_cv["mock"]
-    inspire_applicant_content = tailored_cv["inspiration"]
-    st.markdown("## Fry Applicant Content")
-    st.markdown(fry_applicant_content)
-    st.markdown("## Inspire Applicant Content")
-    st.markdown(inspire_applicant_content)
-
+    try:
+        inspire_applicant_content = tailored_cv["inspiration"]
+        st.markdown("## Inspire Applicant Content")
+        st.markdown(inspire_applicant_content)
+    except Exception as e:
+        st.error(f"Error getting inspire applicant: {e}", icon="🚨")
+        raise
+    
     rain(
     emoji="🌈",
     font_size=54,

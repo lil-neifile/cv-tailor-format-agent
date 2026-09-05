@@ -1,9 +1,7 @@
-from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-template_name = "html_template.html"
-TEMPLATES_DIR = Path(__file__).resolve().parents[2] / "templates"
+from config import TEMPLATES_DIR, template_name
 
 
 class HTMLBuilder:
@@ -13,9 +11,9 @@ class HTMLBuilder:
             autoescape=select_autoescape(["html"]),
         )
 
-    def build_html(self, **kwargs):
+    def build_html(self, **TailoredContent) -> str:
         template = self.env.get_template(template_name)
-        return template.render(**kwargs)
+        return template.render(**TailoredContent)
 
     def build_pdf(self, html: str) -> bytes:
         from playwright.sync_api import sync_playwright

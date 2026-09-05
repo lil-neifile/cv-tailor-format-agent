@@ -1,6 +1,5 @@
 from langsmith import traceable
 from src.workflow_agent import compiled_agent
-from src.workflow import compiled_graph_divided
 from langsmith.schemas import Example, Run
 from langsmith.evaluation import evaluate
 from litellm import completion
@@ -9,15 +8,6 @@ import json
 model = "gemini/gemini-3.6-flash"
 DATASET_NAME = "tailored_cv_dataset"
 
-@traceable(run_type="chain")
-def run_agent_deterministic(inputs: dict) -> dict:
-    content = compiled_graph_divided.invoke(
-        {
-            "base_cv_text": inputs["cv"],
-            "job_description": inputs["job_description"],
-        }
-    )
-    return {"tailored_content": content.get("tailored_content")}
 
 @traceable(run_type="chain")
 def run_agent_dynamic(inputs: dict) -> dict:

@@ -4,7 +4,7 @@ from langgraph.types import Command
 
 from src.agent.prompts_agent import TAILOR_CV_DYNAMIC_SYSTEM
 from src.agent.state_agent import CVAgentDynamicState
-from src.graph.prompts import FRY_APPLICANT_SYSTEM, INSPIRE_APPLICANT_SYSTEM
+from src.agent.prompts_agent import FRY_APPLICANT_SYSTEM, INSPIRE_APPLICANT_SYSTEM
 from src.schemas import TailoredCVDynamic
 from src.services.llm import get_llm, invoke_chat, invoke_structured
 from src.services.pdf_builder import HTMLBuilder
@@ -17,12 +17,13 @@ def _tool_message(text: str, runtime: CVToolRuntime) -> ToolMessage:
 
 
 @tool
-def tailor_cv(runtime: CVToolRuntime) -> Command:
+def tailor_cv(runtime: CVToolRuntime) -> Command | str:
     """Rewrite the applicant's CV so that it matches the job description.
 
     Reads the CV and the job description from the agent state, so it takes no arguments.
     Run this before build_html, inspire_applicant or fry_applicant.
     """
+
     result = invoke_structured(
         TailoredCVDynamic,
         system=TAILOR_CV_DYNAMIC_SYSTEM,
@@ -32,6 +33,7 @@ def tailor_cv(runtime: CVToolRuntime) -> Command:
         ),
         max_tokens=4000,
     )
+        
     return Command(
         update={
             "tailored_content": result.tailored_content.model_dump(),
@@ -55,11 +57,13 @@ def build_html(runtime: CVToolRuntime) -> Command | str:
 
     Requires tailor_cv to have run first. Takes no arguments.
     """
+
     tailored_content = runtime.state.get("tailored_content")
     if not tailored_content:
-        return "There is no tailored CV yet. Call tailor_cv first."
+        return "No tailored content found. Call tailor_cv first."
 
     html_content = HTMLBuilder().build_html(**tailored_content)
+
     return Command(
         update={
             "html_content": html_content,
@@ -84,6 +88,7 @@ def build_pdf(runtime: CVToolRuntime) -> Command | str:
         return "There is no HTML CV yet. Call build_html first."
 
     pdf_bytes = HTMLBuilder().build_pdf(html_content)
+    
     return Command(
         update={
             "pdf_bytes": pdf_bytes,
@@ -104,14 +109,15 @@ def fry_applicant(runtime: CVToolRuntime) -> Command | str:
     Requires tailor_cv to have run first. Takes no arguments.
     """
     keywords_not_matched = runtime.state.get("keywords_not_matched")
-    if not keywords_not_matched:
+    if "keywords_not_matched" not in runtime.state:
         return "The missing keywords are not known yet. Call tailor_cv first."
 
     content = invoke_chat(
-        system=FRY_APPLICANT_SYSTEM,
+    system=FRY_APPLICANT_SYSTEM,
         user="\n".join(keywords_not_matched),
         max_tokens=500,
     ).text
+    
     return Command(
         update={
             "mock": content,
@@ -127,14 +133,15 @@ def inspire_applicant(runtime: CVToolRuntime) -> Command | str:
     Requires tailor_cv to have run first. Takes no arguments.
     """
     keywords_matched = runtime.state.get("keywords_matched")
-    if not keywords_matched:
+    if "keywords_matched" not in runtime.state:
         return "The matched keywords are not known yet. Call tailor_cv first."
 
     content = invoke_chat(
-        system=INSPIRE_APPLICANT_SYSTEM,
+    system=INSPIRE_APPLICANT_SYSTEM,
         user="\n".join(keywords_matched),
         max_tokens=500,
     ).text
+    
     return Command(
         update={
             "inspiration": content,
