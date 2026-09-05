@@ -4,8 +4,6 @@ from src.graph.nodes import tailor_cv
 
 BASE_CV = """
 Liliia Shrainer
-lilischreiner3@gmail.com
-+34627512910
 Valencia, Spain
 linkedin.com/in/liliia-shrainer
 Summary
@@ -84,17 +82,41 @@ AI Data Analysis
 """
 
 JOB_DESCRIPTION = """
-AI Engineer
+Your Responsibilities on this role
+Strong professional experience in Python software development 
 
-We are looking for an AI Engineer to design and deploy LLM-powered applications.
+Proven experience building AI-driven or agentic systems, preferably with LangGraph or similar frameworks 
 
-Requirements:
-- Strong Python programming skills
-- Experience with LangChain and LangGraph
-- LLM fine-tuning and prompt engineering
-- Gemini and OpenAI API integration
-- Docker and Kubernetes for model deployment
-- Excellent communication and collaboration skills
+Solid understanding of Large Language Models (LLMs) and their integration with external APIs or structured data 
+
+Hands-on experience working with LLM providers such as OpenAI, Anthropic, or AWS Bedrock 
+
+Familiarity with cloud-based deployment and scaling, ideally using AWS services 
+
+Strong problem-solving skills with a focus on maintainable, efficient, and scalable code 
+
+A collaborative mindset and comfort working remotely with distributed teams 
+
+Curiosity, adaptability, and a passion for staying ahead in the evolving world of AI
+
+Bonus: Experience with semantic search technologies (vector databases, embeddings, RAG systems)
+
+Bonus: Strong background in measuring, evaluating, and optimizing AI system performance with clear metrics and benchmarking
+
+Bonus: Experience implementing observability and monitoring solutions for AI systems to track quality and iterate on improvements
+
+Bonus: Experience building or integrating MCP (Model Context Protocol) servers for extending AI capabilities
+
+Bonus: Knowledge of agent-to-agent (A2A) communication patterns and multi-agent system architectures
+Role requirements
+Tech stack you will work with:
+Languages: Python 
+
+Frameworks & Tools: LangGraph & related LLM orchestration tools, Docling, LiteLLM, Phoenix
+
+Infrastructure: AWS (Lambda, S3, ECS, and more)
+
+Models: OpenAI, Anthropic, AWS Bedrock, and other foundation model providers
 """
 
 

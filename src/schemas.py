@@ -107,3 +107,17 @@ class CompareCVWithJobDescription(BaseModel):
 
             }
         }
+
+class TailoredCVDynamic(BaseModel):
+    tailored_content: TailoredContent = Field(description="The tailored CV, split into the sections the HTML template renders.")
+    keywords_matched: list[str] = Field(default_factory=list, description="The keywords that were matched in the CV and the job description.")
+    keywords_not_matched: list[str] = Field(default_factory=list, description="The keywords that were not matched in the CV and the job description.")
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "tailored_content": TailoredContent.Config.json_schema_extra["example"],
+                "keywords_matched": ["Python", "SQL", "AWS"],
+                "keywords_not_matched": ["React", "Node.js", "JavaScript"]
+            }
+        }

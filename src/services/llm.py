@@ -6,9 +6,9 @@ from pydantic import BaseModel
 import logging
 
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 load_dotenv(ROOT / ".env")
-load_dotenv(ROOT / "src" / ".env")
+load_dotenv(ROOT  / "../.env")
 
 llm_api_key = os.getenv("GEMINI_API_KEY")
 model = os.getenv("MODEL")
@@ -41,6 +41,7 @@ def invoke_structured(schema: BaseModel, system: str, user: str, max_tokens: int
         return schema.model_validate(result)
     except Exception:
         logging.exception(f"Error invoking structured output")
+        raise
 
 def invoke_chat(system, user, max_tokens: int|None=None) -> dict:
     messages=[

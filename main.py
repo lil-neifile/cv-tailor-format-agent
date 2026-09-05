@@ -1,19 +1,18 @@
-# using streamlit a window that will take a job description and show a tailored cv
 import streamlit as st
+from src.workflow_agent import compiled_agent
 from tests.test_tailor_cv_node import BASE_CV
-from src.workflow import compiled_graph_divided
-from streamlit_extras.let_it_rain import *
+from streamlit_extras.let_it_rain import rain
 
 
-st.title("Tailored CV")
+st.title("CV Agent")
 
 job_description = st.text_area("Job Description")
 
 if st.button("Tailor CV"):
 
     
-    tailored_cv = compiled_graph_divided.invoke({
-        "base_cv_text": BASE_CV,
+    tailored_cv = compiled_agent.invoke({
+        "cv": BASE_CV,
         "job_description": job_description,
     })
     pdf_bytes = tailored_cv["pdf_bytes"]
@@ -33,8 +32,8 @@ if st.button("Tailor CV"):
         st.error(f"Error building HTML: {e}")
 
 
-    fry_applicant_content = tailored_cv["fry_applicant_content"]
-    inspire_applicant_content = tailored_cv["inspire_applicant_content"]
+    fry_applicant_content = tailored_cv["mock"]
+    inspire_applicant_content = tailored_cv["inspiration"]
     st.markdown("## Fry Applicant Content")
     st.markdown(fry_applicant_content)
     st.markdown("## Inspire Applicant Content")
@@ -44,7 +43,5 @@ if st.button("Tailor CV"):
     emoji="🌈",
     font_size=54,
     falling_speed=5,
-    animation_length="infinite",
+    animation_length="short",
 )
-
-

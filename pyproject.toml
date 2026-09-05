@@ -19,6 +19,7 @@ dependencies = [
     "streamlit-extras>=1.6.0",
 ]
 
+
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]

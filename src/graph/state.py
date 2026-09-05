@@ -16,3 +16,4 @@ class CVAgentState(TypedDict, total=False):
     fry_applicant_content: str
     inspire_applicant_content: str
     errors: list[str]
+
