@@ -49,6 +49,7 @@ def invoke_chat(system, user, max_tokens: int|None=None) -> AIMessage:
         logging.warning(f"Error calling primary LLM, calling backup")
         llm = get_llm(max_tokens, model_backup)
         return llm.invoke(messages)
+        
 def get_llm_with_tools(tools: list[BaseTool]) -> ChatLiteLLM:
     llm = get_llm()
     try: 

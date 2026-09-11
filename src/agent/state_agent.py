@@ -1,7 +1,6 @@
-from typing import NotRequired
 
 from langchain.agents import AgentState
-
+from pydantic import Field
 from src.schemas import TailoredContent
 
 
@@ -13,7 +12,7 @@ class CVAgentDynamicState(AgentState):
     """
 
     cv: str
-    job_description: str
+    job_description: str = Field(..., description="The job description for the job the user is applying to")
 
     tailored_content: TailoredContent
     keywords_matched: list[str]
