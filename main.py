@@ -2,17 +2,27 @@ import streamlit as st
 from src.workflow_agent import compiled_agent
 from tests.test_tailor_cv_node import BASE_CV
 from streamlit_extras.let_it_rain import rain
-
+from src.services.cv_parser import CVParser
 
 st.title("CV Agent")
+
+cv_file = st.file_uploader("Upload CV", type=["pdf"])
+
+if cv_file:
+    cv_bytes = cv_file.getvalue()
+    cv_string = CVParser().parse(cv_bytes)
+    
 
 job_description = st.text_area("Job Description")
 
 if st.button("Tailor CV"):
-
+    if not cv_string or not job_description:
+        st.error("Please upload a CV and enter a job description", icon="🚨")
+        st.stop()
+    
     try:
         tailored_cv = compiled_agent.invoke({
-        "cv": BASE_CV,
+        "cv": cv_string,
             "job_description": job_description,
         })
         pdf_bytes = tailored_cv["pdf_bytes"]
