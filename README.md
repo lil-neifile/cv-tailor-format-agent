@@ -1,12 +1,12 @@
 # CV Tailor Format Agent
 
-A LangGraph agent that rewrites a CV to match an AI Engineering job description, renders it as styled HTML and a downloadable PDF, then cheers you on (and jokingly roasts you) for the keywords you hit or missed.
+A LangGraph agent that rewrites an AI Engineering CV to match a job description, renders it as styled HTML and a downloadable PDF, then cheers you on (and jokingly roasts you) for the keywords you hit or missed.
 
-The Streamlit app in `main.py` is the main way to run it: paste a job description, click **Tailor CV**, preview the result, and download the PDF.
+The Streamlit app in `main.py` is the main way to run it: upload a PDF CV, paste a job description, click **Tailor CV**, preview the result, and download the PDF.
 
 ## How it works
 
-The applicant CV and job description are loaded into agent state up front. Tools read that state themselves, so the model never has to paste a CV into a tool argument.
+The uploaded CV is parsed to text with [Docling](https://github.com/docling-project/docling) (`src/services/cv_parser.py`). That text and the job description are loaded into agent state up front. Tools read that state themselves, so the model never has to paste a CV into a tool argument.
 
 The agent loops between an LLM node and a tool node until the work is done:
 
@@ -17,12 +17,14 @@ The agent loops between an LLM node and a tool node until the work is done:
 
 If a tool is called out of order, it tells the model which prerequisite to run first.
 
+LLM and tool nodes retry twice. The LLM node times out after 30s idle; the tool node after 120s. Chat and structured calls go through LiteLLM with a primary model and a backup if the primary fails.
+
 Tailoring rules (from the system prompt): keep existing sections, swap in the job’s wording for overlapping skills, rewrite the summary, and translate the CV to Spanish when the job description is in Spanish.
 
 ## Project layout
 
 ```
-main.py                 Streamlit UI
+main.py                 Streamlit UI (PDF upload + job description)
 config.py               Env vars, model names, template path
 src/
   workflow_agent.py     LangGraph graph (compile + retry/timeout policies)
@@ -34,11 +36,11 @@ src/
     prompts_agent.py    System prompts
   services/
     llm.py              LiteLLM client with primary → backup fallback
+    cv_parser.py        Docling PDF → text
     pdf_builder.py      Jinja2 HTML + Playwright PDF
 templates/
   html_template.html    Resume layout
 tests/                  Unit tests and a scripted agent walkthrough
-evals/                  LangSmith dataset + LLM-as-judge evaluation
 ```
 
 ## Prerequisites
@@ -55,7 +57,7 @@ uv sync
 uv run playwright install chromium
 ```
 
-Create a `.env` in the project root (or one directory above it):
+Create a `.env` in the project root:
 
 ```env
 GEMINI_API_KEY=your-key
@@ -63,15 +65,13 @@ MODEL_PRIMARY=gemini/gemini-2.5-flash
 MODEL_BACKUP=gemini/gemini-2.0-flash
 ```
 
-For LangSmith evaluations, also set `LANGSMITH_API_KEY`.
-
 ## Run the app
 
 ```bash
 uv run streamlit run main.py
 ```
 
-Paste a job description and click **Tailor CV**. The UI currently uses the sample CV in `tests/test_tailor_cv_node.py` (`BASE_CV`). You get:
+Upload a PDF CV, paste a job description, and click **Tailor CV**. You get:
 
 - A downloadable `tailored_cv.pdf`
 - An HTML preview of the resume
@@ -79,16 +79,21 @@ Paste a job description and click **Tailor CV**. The UI currently uses the sampl
 
 ## Call the agent directly
 
+The graph expects CV text, not a PDF. Parse first if you have a file:
+
 ```python
 from src.workflow_agent import compiled_agent
+from src.services.cv_parser import CVParser
+
+cv_text = CVParser().parse(open("my_cv.pdf", "rb").read())
 
 result = compiled_agent.invoke({
-    "cv": open("my_cv.txt").read(),
+    "cv": cv_text,
     "job_description": open("job.txt").read(),
 })
 
-result["html_content"]   # styled HTML
-result["pdf_bytes"]      # PDF bytes
+result["html_content"]         # styled HTML
+result["pdf_bytes"]            # PDF bytes
 result["keywords_matched"]
 result["keywords_not_matched"]
 result["inspiration"]
@@ -101,8 +106,8 @@ result["mock"]
 uv run pytest
 ```
 
-`tests/verify_agent.py` walks the compiled graph with a scripted model (no live LLM, fake PDF) to check the happy path and the out-of-order tool guard.
+`tests/verify_agent.py` walks the compiled graph with a scripted model (no live LLM, fake PDF) to check the happy path and the out-of-order tool guard:
 
-## Evaluations
-
-`evals/dataset.py` upserts examples into the LangSmith dataset `tailored_cv_dataset`. `evals/evaluator.py` runs the agent and scores tailored content against golden CVs with an LLM judge (`cv_alignment_score`).
+```bash
+uv run python tests/verify_agent.py
+```
