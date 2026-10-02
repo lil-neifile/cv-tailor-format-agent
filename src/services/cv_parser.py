@@ -1,6 +1,7 @@
-from docling.document_converter import DocumentConverter
 from io import BytesIO
+
 from docling.datamodel.base_models import DocumentStream
+from docling.document_converter import DocumentConverter
 
 class CVParser:
     def __init__(self):

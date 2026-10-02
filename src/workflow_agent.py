@@ -1,8 +1,8 @@
 from langgraph.graph import END, START, StateGraph
+from langgraph.types import RetryPolicy, TimeoutPolicy
 
 from .agent.nodes_agent import llm_call_node, should_continue, tool_call_node
 from .agent.state_agent import CVAgentDynamicState
-from langgraph.types import RetryPolicy, TimeoutPolicy
 
 agent_builder = StateGraph(CVAgentDynamicState)
 

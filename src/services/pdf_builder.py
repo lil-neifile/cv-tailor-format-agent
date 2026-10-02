@@ -1,18 +1,17 @@
-
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from config import TEMPLATES_DIR, template_name
+from config import config
 
 
 class HTMLBuilder:
     def __init__(self):
         self.env = Environment(
-            loader=FileSystemLoader(TEMPLATES_DIR),
+            loader=FileSystemLoader(config.TEMPLATES_DIR),
             autoescape=select_autoescape(["html"]),
         )
 
     def build_html(self, **TailoredContent) -> str:
-        template = self.env.get_template(template_name)
+        template = self.env.get_template(config.TEMPLATE_NAME)
         return template.render(**TailoredContent)
 
     def build_pdf(self, html: str) -> bytes:

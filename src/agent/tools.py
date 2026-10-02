@@ -3,8 +3,8 @@ from langchain.tools import ToolRuntime, tool
 from langgraph.types import Command
 
 from src.agent.prompts_agent import TAILOR_CV_DYNAMIC_SYSTEM
-from src.agent.state_agent import CVAgentDynamicState
 from src.agent.prompts_agent import FRY_APPLICANT_SYSTEM, INSPIRE_APPLICANT_SYSTEM
+from src.agent.state_agent import CVAgentDynamicState
 from src.schemas import TailoredCVDynamic
 from src.services.llm import get_llm, invoke_chat, invoke_structured
 from src.services.pdf_builder import HTMLBuilder

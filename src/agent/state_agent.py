@@ -1,6 +1,6 @@
-
 from langchain.agents import AgentState
 from pydantic import Field
+
 from src.schemas import TailoredContent
 
 
